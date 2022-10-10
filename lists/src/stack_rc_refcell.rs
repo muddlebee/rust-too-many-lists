@@ -1,5 +1,7 @@
+use std::borrow::BorrowMut;
 use std::rc::Rc;
 use std::cell::{Ref, RefMut, RefCell};
+
 
 pub struct List<T> {
 	head: Link<T>,
@@ -9,7 +11,8 @@ pub struct List<T> {
 
 type Link<T> = Option<Rc<RefCell<Node<T>>>>;
 
-struct Node<T> {
+
+pub struct Node<T> {
 	elem: T,
 	prev: Link<T>,
 	next: Link<T>,
@@ -48,13 +51,25 @@ impl<T> List<T> {
 		}
 		self.length += 1;
 	}
+
+	pub fn peek_front(&mut self) -> Option<T>{
+		
+		match self.head.take() {
+			Some(elem) => 
+			{
+				elem.borrow_mut().prev = Some(new_head.clone());
+
+			},
+		}
+			
+    }
 	
 }
 
 
 #[cfg(test)]
 mod test {
-    use super::List;
+    use super::*;
 
     #[test]
     fn basics() {
@@ -62,6 +77,7 @@ mod test {
 		list.push_front(2);
 		list.push_front(3);
 		eprintln!("list = {:?}", list.length);
+		list.peek_front();	
 	}
 
 }
