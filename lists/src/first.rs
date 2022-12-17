@@ -1,14 +1,15 @@
 use std::mem;
 
+#[derive(Debug)]
 pub struct List {
     head: Link,
 }
-
+#[derive(Debug)]
 enum Link {
     Empty,
     More(Box<Node>),
 }
-
+#[derive(Debug)]
 struct Node {
     elem: i32,
     next: Link,
@@ -19,37 +20,36 @@ impl List {
         List { head: Link::Empty }
     }
 
-    pub fn push(&mut self, elem: i32) {
+    pub fn push(&mut self, item: i32) {
         let new_node = Box::new(Node {
-            elem: elem,
+            elem: item,
             next: mem::replace(&mut self.head, Link::Empty),
         });
-
         self.head = Link::More(new_node);
     }
 
     pub fn pop(&mut self) -> Option<i32> {
-        match mem::replace(&mut self.head, Link::Empty) {
-            Link::Empty => None,
+        let result;
+
+        //move self.head --> old_head by replacing the original reference with Link::Empty
+        let old_head = mem::replace(&mut self.head, Link::Empty);
+        match old_head {
+            Link::Empty => {
+                result = None;
+            }
             Link::More(node) => {
                 self.head = node.next;
-                Some(node.elem)
+                result = Some(node.elem);
             }
-        }
+        };
+        result
     }
 }
 
 impl Drop for List {
-    fn drop(&mut self) {
-        let mut cur_link = mem::replace(&mut self.head, Link::Empty);
-
-        while let Link::More(mut boxed_node) = cur_link {
-            cur_link = mem::replace(&mut boxed_node.next, Link::Empty);
-        }
-    }
+    fn drop(&mut self) {}
 }
 
-#[cfg(test)]
 mod test {
     use super::List;
 
@@ -64,6 +64,8 @@ mod test {
         list.push(1);
         list.push(2);
         list.push(3);
+        println!("{:?}", list);
+
 
         // Check normal removal
         assert_eq!(list.pop(), Some(3));
