@@ -29,6 +29,7 @@ impl List {
     }
 
     pub fn pop(&mut self) -> Option<i32> {
+        /// mem::replace() takes a mutable reference to a value and a new value, and returns the old value.
         match mem::replace(&mut self.head, Link::Empty) {
             Link::Empty => None,
             Link::More(node) => {
