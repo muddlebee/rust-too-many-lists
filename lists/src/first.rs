@@ -1,14 +1,17 @@
 use std::mem;
 
+#[derive(Debug)]
 pub struct List {
     head: Link,
 }
 
+#[derive(Debug)]
 enum Link {
     Empty,
     More(Box<Node>),
 }
 
+#[derive(Debug)]
 struct Node {
     elem: i32,
     next: Link,
@@ -20,16 +23,16 @@ impl List {
     }
 
     pub fn push(&mut self, elem: i32) {
+        //push new node to the front of the list
         let new_node = Box::new(Node {
             elem: elem,
             next: mem::replace(&mut self.head, Link::Empty),
         });
-
         self.head = Link::More(new_node);
     }
 
     pub fn pop(&mut self) -> Option<i32> {
-        /// mem::replace() takes a mutable reference to a value and a new value, and returns the old value.
+        // mem::replace() takes a mutable reference to a value and a new value, and returns the old value.
         match mem::replace(&mut self.head, Link::Empty) {
             Link::Empty => None,
             Link::More(node) => {
@@ -81,5 +84,7 @@ mod test {
         // Check exhaustion
         assert_eq!(list.pop(), Some(1));
         assert_eq!(list.pop(), None);
+
+
     }
 }
