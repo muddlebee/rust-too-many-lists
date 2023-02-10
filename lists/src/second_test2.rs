@@ -33,7 +33,7 @@ impl <T> List<T> {
         self.head = Some(new_element);
     }
 
-    //pop the first node from the list
+/*    //pop the first node from the list
     pub fn pop(&mut self) -> Option<T> {
         let mut old_head = self.head.take();
         match old_head {
@@ -43,8 +43,27 @@ impl <T> List<T> {
                 Some(node.elem)
             }
         }
+    }*/
+
+    pub fn pop(&mut self) -> Option<T> {
+        self.head.take().map(|node| {
+            self.head = node.next;
+            node.elem
+        })
     }
 
+    pub fn peek(&self) -> Option<&T> {
+        self.head.as_ref().map(|node| {
+            &node.elem
+        })
+    }
+
+    //mutable version of peek
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
+        self.head.as_mut().map(|node| {
+            &mut node.elem
+        })
+    }
 }
 
 #[cfg(test)]
@@ -62,6 +81,8 @@ mod test {
         list.push(1);
         list.push(2);
         list.push(3);
+        assert_eq!(list.peek(), Some(&3));
+
         print!("{:?}", list);
          // Check normal removal
          assert_eq!(list.pop(), Some(3));
@@ -78,6 +99,7 @@ mod test {
          // Check exhaustion
          assert_eq!(list.pop(), Some(1));
          assert_eq!(list.pop(), None);
+
 
     }
 }
