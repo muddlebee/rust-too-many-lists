@@ -43,6 +43,13 @@ impl List {
         }
     }
 
+    /// improved pop
+    // pub fn pop(&mut self) -> Option<i32> {
+    //     self.head.take().map(|node| {
+    //         self.head = node.next;
+    //         node.elem
+    //     })
+    // }
 
 }
 
